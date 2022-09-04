@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="track_lidar" type="track_lidar" name="track_lidar"  output="screen" />
+    <param name="shutdown"      value="true"  type="bool"/>
+</launch>

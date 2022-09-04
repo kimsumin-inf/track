@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="track_path" type="track_path" name="track_path"  output="screen" />
+    <param name="interval"      value="0.5"  type="double"/>
+</launch>
