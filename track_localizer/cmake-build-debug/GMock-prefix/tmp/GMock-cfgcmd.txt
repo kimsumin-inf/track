@@ -1,0 +1,1 @@
+cmd='/snap/clion/204/bin/cmake/linux/bin/cmake;-DCMAKE_CXX_FLAGS= -g -Wno-old-style-cast -Wno-missing-field-initializers -Wno-ctor-dtor-privacy -Wno-switch-default;-GNinja;<SOURCE_DIR><SOURCE_SUBDIR>'

@@ -33,14 +33,13 @@ track_path::track_path()
 void track_path::gps_CB(const novatel_gps_msgs::NovatelPosition::ConstPtr &msg) {
     GPS = *msg;
     string utm_zone;
-    RobotLocalization::NavsatConversions::LLtoUTM(GPS.lat,GPS.lon, now.x, now.y, utm_zone);
+    RobotLocalization::NavsatConversions::LLtoUTM(GPS.lat,GPS.lon, now.y, now.x, utm_zone);
     if (gps_init_param == true){
 
         init.x = now.x;
         init.y = now.y;
-        init_pos.position.x = init.x;
-        init_pos.position.y = init.y;
-        init_pos.position.z = 0;
+        init_pos.position.x =init.x;
+        init_pos.position.y =init.y;
 
         prev.x = now.x;
         prev.y = now.y;

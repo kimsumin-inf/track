@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: track_localizer
+Description: Description of track_localizer
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs nav_msgs novatel_gps_msgs selfcar_lib sensor_msgs std_msgs tf2 tf2_ros

@@ -1,0 +1,18 @@
+<launch>
+    <node pkg="track_localizer" type="track_localizer" name="track_localizer"  output="screen" />
+    <param name="calibration_frame_count"   value="50"  type="int"/>  <!-- during 40 * 0.05 second -->
+
+    <!-- imu -->
+    <param name="imu_subscribe_topic_name"    value="/vectornav/IMU"  type="string"/>
+
+    <!-- gnss_localizer -->
+    <param name="gps_velocity_estimate"         value="true"      type="bool"/>
+    <param name="gps_subscribe_topic_name"      value="/fix"  type="string"/>
+    <param name="gps_bestvel_subscribe_topic_name"  value="/bestvel"  type="string"/>
+    <param name="gps_bestpos_subscribe_topic_name"  value="/bestpos"  type="string"/>
+    <param name="covariance_sample_num"         value="25"         type="int"/>
+    <param name="map_state_name" value="/track/track_path/path_exist" type="string"/>
+    <param name="init_utm_name" value="/track/track_path/utm_init_pos" type="string"/>
+
+    <node type="rviz" name="rviz" pkg="rviz" respawn="false" args="-d $(find track_localizer)/rviz/track_localizer.rviz"/>
+</launch>
