@@ -30,9 +30,9 @@ Track_Control::Track_Control()
 }
 void Track_Control::vel_CB(const novatel_gps_msgs::NovatelVelocity::ConstPtr &msg) {
     gps_vel = *msg;
-    double real_speed = sqrt(pow(gps_vel.vertical_speed,2)+pow(gps_vel.horizontal_speed,2))*36;
+    real_vel = sqrt(pow(gps_vel.vertical_speed,2)+pow(gps_vel.horizontal_speed,2))*36;
 
-    control_vel = int(hoped_vel+(hoped_vel - real_speed));
+    control_vel = int(hoped_vel+(hoped_vel - real_vel));
 }
 void Track_Control::path_CB(const nav_msgs::Path::ConstPtr &msg) {
     path =*msg;
@@ -52,7 +52,11 @@ void Track_Control::pose_CB(const geometry_msgs::PoseWithCovariance::ConstPtr &m
 void Track_Control::map_state_CB(const std_msgs::Bool::ConstPtr &msg) {
     map_state = *msg;
     if (map_state.data == true){
+        ROS_INFO("Path Generated, and Follow");
         Flag = true;
+    }
+    else {
+        ROS_INFO("Path Not Generated, waiting for Path");
     }
 
 }
@@ -148,20 +152,20 @@ void Track_Control::local_path(nav_msgs::Path path)
         temp_pose.header.stamp = ros::Time::now();
         temp_pose.header.frame_id = "map";
 
+        ROS_INFO("now index: %d, total index: %d", temp_num, path.poses.size());
 
         for(int i = temp_num; i< temp_num + 20; i++)
         {
-            ROS_INFO("path size: %d", path.poses.size());
             if (i>=path.poses.size()){
                 int j = i-path.poses.size();
-                ROS_INFO("now index: %d", j);
+
                 temp_pose.pose.position.x = path.poses.at(j).pose.position.x;
                 temp_pose.pose.position.y = path.poses.at(j).pose.position.y;
                 temp_pose.pose.position.z = 0;
                 tracking_path.poses.push_back(temp_pose);
             }
             else {
-                ROS_INFO("now index: %d", i);
+
                 temp_pose.pose.position.x = path.poses.at(i).pose.position.x;
                 temp_pose.pose.position.y = path.poses.at(i).pose.position.y;
                 temp_pose.pose.position.z = 0;
@@ -177,9 +181,13 @@ void Track_Control::local_path(nav_msgs::Path path)
 void Track_Control::process() {
     if(Flag == true)
     {
+        printf("\033[2J");
+        printf("\033[1;1H");
+        ROS_INFO("current_speed: %d KPH, hoped_speed: %d KPH, control_speed: %d KPH",real_vel/10, hoped_vel/10, control_vel/10);
+        ROS_INFO("Steering value:%f", pure_pursuit());
         local_path(path);
         cmd_vel.linear.x = control_vel;
-        cmd_vel.angular.z = pure_pursuit();
+        cmd_vel.angular.z = pure_pursuit()*71;
         pub_Cmd.publish(cmd_vel);
 
     }

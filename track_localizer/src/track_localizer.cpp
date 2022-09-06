@@ -118,6 +118,8 @@ void Localizer::imuCallback(const sensor_msgs::Imu::ConstPtr &msg)
 void Localizer::gpsCallback(const sensor_msgs::NavSatFix::ConstPtr &msg)
 {
     if (processor_start == true) {
+        printf("\033[2J");
+        printf("\033[1;1H");
         gps = *msg;
         double utm_x_meas = 0;
         double utm_y_meas = 0;

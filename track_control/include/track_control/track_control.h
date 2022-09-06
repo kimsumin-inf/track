@@ -72,6 +72,7 @@ private:
     double erp_yaw, erp_roll, erp_pitch;
     int hoped_vel;
     int control_vel;
+    int real_vel;
 
     bool Flag;
     bool is_look_foward_point;
