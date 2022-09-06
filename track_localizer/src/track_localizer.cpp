@@ -205,6 +205,29 @@ void Localizer::bestvelCallback(const novatel_gps_msgs::NovatelVelocity::ConstPt
 {
     bestvel = *msg;
     gpsData(GPSIDX::V) = sqrt(pow(bestvel.horizontal_speed,2) + pow(bestvel.vertical_speed,2));
+    ROS_INFO("real speed: %lf KPH", gpsData(GPSIDX::V)*3.6);
+    if (gpsData(GPSIDX::V)*3.6>=3 ){
+        if (init_kf == true) {
+            Eigen::MatrixXd X_curr = Eigen::MatrixXd::Zero(dim_kf,1);
+            Eigen::MatrixXd P_curr = Eigen::MatrixXd::Zero(dim_kf,dim_kf);
+            ROS_INFO("x: %lf, y: %lf", gpsData(GPSIDX::X), gpsData(GPSIDX::Y));
+            X_curr(KFIDX::X) = gpsData(GPSIDX::X);
+            X_curr(KFIDX::Y) = gpsData(GPSIDX::Y);
+            X_curr(KFIDX::YAW) = gpsData(GPSIDX::YAW);
+            X_curr(KFIDX::VX) = 0;
+            P_curr(KFIDX::X, KFIDX::X) = 1.0;
+            P_curr(KFIDX::Y, KFIDX::Y) = 1.0;
+            P_curr(KFIDX::YAW, KFIDX::YAW) = 0.0;
+            P_curr(KFIDX::VX, KFIDX::VX) = 0.0;
+            kf_.init(X_curr, P_curr);
+            bKalmanInit = true;
+
+            localHeading = gpsData(GPSIDX::YAW);
+
+            ROS_INFO("Kalman Filter Initialized");
+            init_kf = false;
+        }
+    }
     if (erp.getState() == "BACKWARD") gpsData(GPSIDX::V) = -1 * sqrt(pow(bestvel.horizontal_speed,2) + pow(bestvel.vertical_speed,2));
     else if (erp.getState() == "STOP") gpsData(GPSIDX::V) = 0;
 }
@@ -223,27 +246,6 @@ void Localizer::init_utm_Callback(const geometry_msgs::Pose::ConstPtr &msg) {
 }
 void Localizer::map_state_Callback(const std_msgs::Bool::ConstPtr &msg) {
     map_state = *msg;
-    if (map_state.data==true && init_kf == true) {
-        Eigen::MatrixXd X_curr = Eigen::MatrixXd::Zero(dim_kf,1);
-        Eigen::MatrixXd P_curr = Eigen::MatrixXd::Zero(dim_kf,dim_kf);
-        ROS_INFO("x: %lf, y: %lf", gpsData(GPSIDX::X), gpsData(GPSIDX::Y));
-        X_curr(KFIDX::X) = gpsData(GPSIDX::X);
-        X_curr(KFIDX::Y) = gpsData(GPSIDX::Y);
-        X_curr(KFIDX::YAW) = gpsData(GPSIDX::YAW);
-        X_curr(KFIDX::VX) = 0;
-        P_curr(KFIDX::X, KFIDX::X) = 1.0;
-        P_curr(KFIDX::Y, KFIDX::Y) = 1.0;
-        P_curr(KFIDX::YAW, KFIDX::YAW) = 0.0;
-        P_curr(KFIDX::VX, KFIDX::VX) = 0.0;
-        kf_.init(X_curr, P_curr);
-        bKalmanInit = true;
-
-        localHeading = gpsData(GPSIDX::YAW);
-
-        ROS_INFO("Kalman Filter Initialized");
-        init_kf = false;
-    }
-
 }
 void Localizer::filter()
 {

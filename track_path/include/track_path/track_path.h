@@ -7,11 +7,13 @@
 
 #include <ros/ros.h>
 #include <novatel_gps_msgs/NovatelPosition.h>
+#include <novatel_gps_msgs/NovatelVelocity.h>
 #include <nav_msgs/Path.h>
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/Pose.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Int16.h>
+#include <geometry_msgs/PoseWithCovariance.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -37,7 +39,8 @@ class track_path{
 
 private:
     void gps_CB(const novatel_gps_msgs::NovatelPosition::ConstPtr &msg);
-
+    void vel_CB(const novatel_gps_msgs::NovatelVelocity::ConstPtr &msg);
+    void pose_CB(const geometry_msgs::PoseWithCovariance::ConstPtr &msg);
 
     //ros variable
     ros::NodeHandle nh;
@@ -51,6 +54,8 @@ private:
     ros::Publisher pub_CIRCUIT_CNT;
 
     ros::Subscriber sub_GPS;
+    ros::Subscriber sub_VEL;
+    ros::Subscriber sub_Pose;
 
     //Pos
     UTM init;
@@ -59,6 +64,9 @@ private:
 
     //msg data
     novatel_gps_msgs::NovatelPosition GPS;
+    novatel_gps_msgs::NovatelVelocity VEL;
+    geometry_msgs::PoseWithCovariance POSE;
+
     nav_msgs::Path global_path;
     geometry_msgs::Pose init_pos;
     std_msgs::Bool global_path_flag;
@@ -76,6 +84,7 @@ private:
     double now_distance;
     double interval;
     int circuit_cnt;
+    double real_speed ;
 
     // function
     double calc_distance(UTM pos1, UTM pos2);

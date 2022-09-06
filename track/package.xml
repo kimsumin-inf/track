@@ -10,7 +10,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>track_lidar</exec_depend>
   <exec_depend>track_path</exec_depend>
-
+  <exec_depend>track_control</exec_depend>
   <export>
     <metapackage/>
   </export>
