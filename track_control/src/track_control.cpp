@@ -9,7 +9,7 @@ using namespace std;
 Track_Control::Track_Control()
 :nh(""), pnh("")
 {
-    pnh.param<double>("L", L, 0);
+    pnh.param<double>("L", L, 0.1);
     pnh.param<double>("VL", VL, 1.6);
     pnh.param<double>("max_lfd", max_lfd, 10.0);
     pnh.param<double>("min_lfd", min_lfd, 1.4);    pnh.param<int>("hoped_vel", hoped_vel, 50);
