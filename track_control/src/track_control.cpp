@@ -11,7 +11,7 @@ Track_Control::Track_Control()
 {
     pnh.param<double>("L", L, 0);
     pnh.param<double>("VL", VL, 1.6);
-    pnh.param<double>("max_lfd", max_lfd, 7.0);
+    pnh.param<double>("max_lfd", max_lfd, 10.0);
     pnh.param<double>("min_lfd", min_lfd, 1.4);    pnh.param<int>("hoped_vel", hoped_vel, 50);
     pnh.param<int>("circuit", circuit, 5);
 
