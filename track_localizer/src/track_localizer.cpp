@@ -208,7 +208,7 @@ void Localizer::bestvelCallback(const novatel_gps_msgs::NovatelVelocity::ConstPt
     bestvel = *msg;
     gpsData(GPSIDX::V) = sqrt(pow(bestvel.horizontal_speed,2) + pow(bestvel.vertical_speed,2));
     ROS_INFO("real speed: %lf KPH", gpsData(GPSIDX::V)*3.6);
-    if (gpsData(GPSIDX::V)*3.6>=3 ){
+    if (gpsData(GPSIDX::V)*3.6>= 4.5){
         if (init_kf == true) {
             Eigen::MatrixXd X_curr = Eigen::MatrixXd::Zero(dim_kf,1);
             Eigen::MatrixXd P_curr = Eigen::MatrixXd::Zero(dim_kf,dim_kf);

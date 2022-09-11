@@ -180,7 +180,7 @@ void Track_Control::process() {
         ROS_INFO("Steering value:%f", pure_pursuit());
         local_path(path);
         cmd_vel.linear.x = control_vel;
-        cmd_vel.angular.z = pure_pursuit()*71;
+        cmd_vel.angular.z = -1 * pure_pursuit()*71;
         pub_Cmd.publish(cmd_vel);
     }
 }
