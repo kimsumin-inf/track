@@ -9,10 +9,10 @@ using namespace std;
 Track_Control::Track_Control()
 :nh(""), pnh("")
 {
-    pnh.param<double>("L", L, 0);
+    pnh.param<double>("L", L, 0.1);
     pnh.param<double>("VL", VL, 1.6);
-    pnh.param<double>("max_lfd", max_lfd, 0.5);
-    pnh.param<double>("min_lfd", min_lfd, 0.2);
+    pnh.param<double>("max_lfd", max_lfd, 10.0);
+    pnh.param<double>("min_lfd", min_lfd, 1.4);
     pnh.param<int>("hoped_vel", hoped_vel, 50);
     pnh.param<int>("circuit", circuit, 5);
 
@@ -26,7 +26,6 @@ Track_Control::Track_Control()
     pub_Tracking_Path = nh.advertise<nav_msgs::Path>("/track/track_control/tracking_path",1);
 
     Flag = false;
-
 }
 void Track_Control::vel_CB(const novatel_gps_msgs::NovatelVelocity::ConstPtr &msg) {
     gps_vel = *msg;
@@ -36,10 +35,6 @@ void Track_Control::vel_CB(const novatel_gps_msgs::NovatelVelocity::ConstPtr &ms
 }
 void Track_Control::path_CB(const nav_msgs::Path::ConstPtr &msg) {
     path =*msg;
-    for(auto i : path.poses){
-
-    }
-
 }
 
 void Track_Control::pose_CB(const geometry_msgs::PoseWithCovariance::ConstPtr &msg) {
@@ -62,7 +57,6 @@ void Track_Control::map_state_CB(const std_msgs::Bool::ConstPtr &msg) {
 }
 void Track_Control::init_utm_CB(const geometry_msgs::Pose::ConstPtr &msg) {
     init_utm = *msg;
-
 }
 
 double Track_Control::pure_pursuit()
@@ -80,7 +74,7 @@ double Track_Control::pure_pursuit()
     double rotated_x = 0;
     double rotated_y = 0;
 
-    lfd = 0.21/0.1;
+    lfd = real_vel/2.0;
 
     if(lfd < min_lfd)
     {
@@ -165,7 +159,6 @@ void Track_Control::local_path(nav_msgs::Path path)
                 tracking_path.poses.push_back(temp_pose);
             }
             else {
-
                 temp_pose.pose.position.x = path.poses.at(i).pose.position.x;
                 temp_pose.pose.position.y = path.poses.at(i).pose.position.y;
                 temp_pose.pose.position.z = 0;
@@ -189,6 +182,5 @@ void Track_Control::process() {
         cmd_vel.linear.x = control_vel;
         cmd_vel.angular.z = pure_pursuit()*71;
         pub_Cmd.publish(cmd_vel);
-
     }
 }

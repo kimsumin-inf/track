@@ -1,9 +1,9 @@
 <launch>
     <node pkg="track_control" type="track_control" name="track_control"  output="screen" />
-    <param name="L"      value="0"  type="double"/>
+    <param name="L"      value="0.1"  type="double"/>
     <param name="VL"      value="1.6"  type="double"/>
-    <param name="max_lfd"      value="0.5"  type="double"/>
-    <param name="min_lfd"      value="0.2"  type="double"/>
+    <param name="max_lfd"      value="10.0"  type="double"/>
+    <param name="min_lfd"      value="1.4"  type="double"/>
     <param name="hoped"      value="50"  type="int"/>
     <param name="circuit"      value="5"  type="int"/>
 </launch>
